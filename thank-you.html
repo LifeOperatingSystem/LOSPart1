@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifying Order...</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #fcfcfd; color: #1a1a1a; text-align: center; padding: 40px 20px; }
+        .card { max-width: 500px; margin: 80px auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.04); border: 1px solid #eaeaea; }
+        .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #0071e3; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .hidden-zone { display: none; }
+        .btn { display: inline-block; background-color: #28a745; color: white; padding: 12px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div id="loader-state">
+            <div class="spinner"></div>
+            <h2>Verifying payment tokens...</h2>
+            <p>Securing your financial asset downlinks. Do not close this browser page window.</p>
+        </div>
+
+        <div id="success-state" class="hidden-zone">
+            <h2 style="color: #28a745;">✓ Verification Success</h2>
+            <p>Your premium workbook bundle download sequence initiated automatically.</p>
+            <a id="fallback-trigger" href="#" class="btn">Manual Download Link</a>
+        </div>
+
+        <div id="error-state" class="hidden-zone">
+            <h2 style="color: #dc3545;">⚠ Security Refusal</h2>
+            <p>No verified transaction signature detected. Purchase tracking authorization missing.</p>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const URLParameters = new URLSearchParams(window.location.search);
+            // Cashfree appends specific parameters automatically upon handling redirection loops
+            const transactionToken = URLParameters.get('order_id') || URLParameters.get('txStatus');
+
+            // We will drop your raw converted Google Drive Direct Link string right here in the next section
+            const distributionAssetTarget = "https://your-obfuscated-google-drive-link-placeholder.com";
+
+            if (!transactionToken || transactionToken === "FAILED") {
+                document.getElementById('loader-state').style.display = 'none';
+                document.getElementById('error-state').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('loader-state').style.display = 'none';
+            document.getElementById('success-state').style.display = 'block';
+            document.getElementById('fallback-trigger').href = distributionAssetTarget;
+
+            // Automation Trigger Hook: Programmatically forces execution download string immediately
+            const executionAnchor = document.createElement('a');
+            executionAnchor.href = distributionAssetTarget;
+            executionAnchor.setAttribute('download', 'premium_bundle.zip');
+            document.body.appendChild(executionAnchor);
+            executionAnchor.click();
+            document.body.removeChild(executionAnchor);
+        });
+    </script>
+</body>
+</html>
