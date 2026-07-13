@@ -18,7 +18,7 @@
     <div class="card">
         <div id="loader-state">
             <div class="spinner"></div>
-            <h2>Verifying payment tokens...</h2>
+            <h2>Verifying payment status...</h2>
             <p>Securing your financial asset downlinks. Do not close this browser page window.</p>
         </div>
 
@@ -37,23 +37,27 @@
     <script>
         window.addEventListener('DOMContentLoaded', () => {
             const URLParameters = new URLSearchParams(window.location.search);
-            // Cashfree appends specific parameters automatically upon handling redirection loops
-            const transactionToken = URLParameters.get('order_id') || URLParameters.get('txStatus');
+            
+            // Checks for EVERY possible parameter parameter Cashfree sends back (order_id, orderId, or txStatus)
+            const orderId = URLParameters.get('order_id') || URLParameters.get('orderId');
+            const txStatus = URLParameters.get('txStatus');
 
-            // We will drop your raw converted Google Drive Direct Link string right here in the next section
-            const distributionAssetTarget = "https://your-obfuscated-google-drive-link-placeholder.com";
+            // Your verified direct Google Drive content link
+            const distributionAssetTarget = "https://drive.usercontent.google.com/download?id=1tEi9N0NzLH73hP5SVsv7_rZDUAK1HrUx&export=download";
 
-            if (!transactionToken || transactionToken === "FAILED") {
+            // Security check: If there's absolutely no order tracking or if status is explicitly CANCELLED/FAILED
+            if ((!orderId && !txStatus) || txStatus === "CANCELLED" || txStatus === "FAILED") {
                 document.getElementById('loader-state').style.display = 'none';
                 document.getElementById('error-state').style.display = 'block';
                 return;
             }
 
+            // Success state execution
             document.getElementById('loader-state').style.display = 'none';
             document.getElementById('success-state').style.display = 'block';
             document.getElementById('fallback-trigger').href = distributionAssetTarget;
 
-            // Automation Trigger Hook: Programmatically forces execution download string immediately
+            // Automation Trigger: Forces the file download smoothly in the background
             const executionAnchor = document.createElement('a');
             executionAnchor.href = distributionAssetTarget;
             executionAnchor.setAttribute('download', 'premium_bundle.zip');
