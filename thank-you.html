@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verifying Order...</title>
+    <title>Delivering Bundle...</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #fcfcfd; color: #1a1a1a; text-align: center; padding: 40px 20px; }
         .card { max-width: 500px; margin: 80px auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.04); border: 1px solid #eaeaea; }
@@ -18,19 +18,19 @@
     <div class="card">
         <div id="loader-state">
             <div class="spinner"></div>
-            <h2>Verifying payment status...</h2>
-            <p>Securing your financial asset downlinks. Do not close this browser page window.</p>
+            <h2>Processing Your Access...</h2>
+            <p>Verifying payment. Your download will start automatically in a moment.</p>
         </div>
 
         <div id="success-state" class="hidden-zone">
-            <h2 style="color: #28a745;">✓ Verification Success</h2>
-            <p>Your premium workbook bundle download sequence initiated automatically.</p>
-            <a id="fallback-trigger" href="#" class="btn">Manual Download Link</a>
+            <h2 style="color: #28a745;">✓ Payment Confirmed</h2>
+            <p>Your LOS Part 1 Bundle is downloading. If it doesn't start automatically, click below:</p>
+            <a id="fallback-trigger" href="#" class="btn">Download Bundle (.ZIP)</a>
         </div>
 
         <div id="error-state" class="hidden-zone">
-            <h2 style="color: #dc3545;">⚠ Security Refusal</h2>
-            <p>No verified transaction signature detected. Purchase tracking authorization missing.</p>
+            <h2 style="color: #dc3545;">⚠ Unauthorized Access</h2>
+            <p>No valid transaction parameter detected. Please complete the purchase via our landing page.</p>
         </div>
     </div>
 
@@ -38,29 +38,28 @@
         window.addEventListener('DOMContentLoaded', () => {
             const URLParameters = new URLSearchParams(window.location.search);
             
-            // Checks for EVERY possible parameter parameter Cashfree sends back (order_id, orderId, or txStatus)
-            const orderId = URLParameters.get('order_id') || URLParameters.get('orderId');
+            // Check all parameter options sent back by Cashfree
+            const orderId = URLParameters.get('order_id') || URLParameters.get('orderId') || URLParameters.get('code');
             const txStatus = URLParameters.get('txStatus');
 
-            // Your verified direct Google Drive content link
+            // Direct link pointing to your uploaded Life-Operating-System-Bundle.zip
             const distributionAssetTarget = "https://drive.usercontent.google.com/download?id=1tEi9N0NzLH73hP5SVsv7_rZDUAK1HrUx&export=download";
 
-            // Security check: If there's absolutely no order tracking or if status is explicitly CANCELLED/FAILED
-            if ((!orderId && !txStatus) || txStatus === "CANCELLED" || txStatus === "FAILED") {
+            // Block direct visits without parameters
+            if (!orderId && !txStatus) {
                 document.getElementById('loader-state').style.display = 'none';
                 document.getElementById('error-state').style.display = 'block';
                 return;
             }
 
-            // Success state execution
+            // Display success and trigger auto-download
             document.getElementById('loader-state').style.display = 'none';
             document.getElementById('success-state').style.display = 'block';
             document.getElementById('fallback-trigger').href = distributionAssetTarget;
 
-            // Automation Trigger: Forces the file download smoothly in the background
             const executionAnchor = document.createElement('a');
             executionAnchor.href = distributionAssetTarget;
-            executionAnchor.setAttribute('download', 'premium_bundle.zip');
+            executionAnchor.setAttribute('download', 'Life-Operating-System-Bundle.zip');
             document.body.appendChild(executionAnchor);
             executionAnchor.click();
             document.body.removeChild(executionAnchor);
